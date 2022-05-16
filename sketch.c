@@ -162,7 +162,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Pencil drawing"),
     "categories",  "Aristic",
     "reference-hash", "456j6bfghd50f4f25sb27ac",
-    "description", _("Make your image have a drawing effect with GEGL  "
+    "description", _("Make your image have a drawing effect with GEGL. Works best on images with solid color backgrounds.   "
                      ""),
     NULL);
 }
