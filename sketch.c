@@ -23,7 +23,7 @@
 #ifdef GEGL_PROPERTIES
 
 
-property_double (brightness, _("White Overlay"), 1.5)
+property_double (brightness, _("White Overlay"), 0.2)
    description  (_("Amount to increase the white overlay"))
    value_range  (0, 0.3)
    ui_range     (0, 0.3)
