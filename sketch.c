@@ -48,7 +48,7 @@ property_double (low, _("Low Luminance"), 0.004)
 
 property_double (high, _("High Luminance"), 0.009)
     description ( _("Input luminance levels"))
-    ui_range    (0.3, 0.014)
+    ui_range    (0.004, 0.010)
 
 
 
@@ -168,7 +168,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Pencil drawing"),
     "categories",  "Aristic",
     "reference-hash", "456j6bfghd50f435sf27ac",
-    "description", _("Make your image have a drawing effect with GEGL. Works best on images with solid color backgrounds.   "
+    "description", _("Make your image have a drawing effect with GEGL.   "
                      ""),
     NULL);
 }
