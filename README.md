@@ -1,6 +1,6 @@
 gegl:pencil
 =========
-![image preview](pencil_preview_1.png)
+![image preview](pencil_preview1.png)
 A custom GEGL operation (and by extension GIMP filter) renders a basic pencil drawing. Beaver programmed the filter while Gimp Chat user 
 cli345 discovered the gegl graph algorithm. 
 
