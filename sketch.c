@@ -14,7 +14,7 @@
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
- * GEGL Pencil, 2022 Beaver programmed filter) 2022 "cli345 Gimpchat.com' (Discoverer of the GEGL operations that made the filter)
+ * 2022 Beaver (GEGL Sketch)
  */
 
 #include "config.h"
@@ -22,33 +22,31 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_double (gaus, _("Blur"), 2.0)
-  value_range (0.0, 2.5)
-  ui_range (0.0, 2.5)
-  ui_gamma (1.5)
 
-property_int (dt, _("Smoothness"), 1)
-  description(_("Number of filtering iterations. "
-                "A value between 2 and 4 is usually enough."))
-  value_range (1, 5)
+property_double (brightness, _("White Overlay"), 0.2)
+   description  (_("Amount to increase the white overlay"))
+   value_range  (0, 0.3)
+   ui_range     (0, 0.3)
 
-property_double (dg1, _("Radius 1"), 1.0)
-  value_range (0.4, 1.4)
-  ui_range (0.0, 1.4)
-  ui_gamma (1.5)
 
-property_double (dg2, _("Radius 2"), 0.33)
-  value_range (0.0, 1.4)
-  ui_range (0.0, 1.4)
-  ui_gamma (1.5)
+property_double (edgeamount, _("Pen Intensity"), 0.30)
+   description (_("Strength of Effect"))
+   value_range (0.0, 0.5)
+   ui_range    (0.0, 0.5)
 
-property_double (low, _("Low Luminance"), 0.004)
-    description ( _("Input luminance level to become lowest output"))
-    ui_range    (0.0, 0.008)
 
-property_double (high, _("High Luminance"), 0.009)
-    description ( _("Input luminance levels"))
-    ui_range    (0.004, 0.010)
+property_double (threshold, _("Threshold"), 0.50)
+    value_range (-0.25, 0.8)
+    ui_range    (-0.25, 0.8)
+    description(_("Scalar threshold level (overridden if an auxiliary input buffer is provided.)."))
+
+property_double (gaus, _("Blur"), 1.5)
+   description (_("Standard deviation (spatial scale factor)"))
+   value_range (1.5, 2.5)
+   ui_range    (1.5, 2.5)
+   ui_gamma    (3.0)
+   ui_meta     ("unit", "pixel-distance")
+   ui_meta     ("axis", "y")
 
 
 
@@ -63,81 +61,72 @@ property_double (high, _("High Luminance"), 0.009)
 static void attach (GeglOperation *operation)
 {
   GeglNode *gegl = operation->node;
-  GeglNode *input, *output, *nr, *dt, *dg, *gray, *levels, *ig, *rc, *nr2, *blur;
+  GeglNode *input, *output, *gray, *edge, *threshold, *invert, *gaus, *med, *vp, *brightness;
 
   input    = gegl_node_get_input_proxy (gegl, "input");
   output   = gegl_node_get_output_proxy (gegl, "output");
-
-
-  nr = gegl_node_new_child (gegl,
-                                  "operation", "gegl:noise-reduction",
-                                  NULL);
-
-  dt = gegl_node_new_child (gegl,
-                                  "operation", "gegl:domain-transform",
-                                  NULL);
-
-  dg = gegl_node_new_child (gegl,
-                                  "operation", "gegl:difference-of-gaussians",
-                                  NULL);
-
 
 
   gray = gegl_node_new_child (gegl,
                                   "operation", "gegl:gray",
                                   NULL);
 
-  levels = gegl_node_new_child (gegl,
-                                  "operation", "gegl:levels",
+
+  edge = gegl_node_new_child (gegl,
+                                  "operation", "gegl:edge-neon",
                                   NULL);
 
 
-  ig = gegl_node_new_child (gegl,
-                                  "operation", "gegl:invert-gamma",
+  threshold = gegl_node_new_child (gegl,
+                                  "operation", "gegl:threshold",
                                   NULL);
 
 
-  rc = gegl_node_new_child (gegl,
-                                  "operation", "gegl:rgb-clip",
+   invert= gegl_node_new_child (gegl,
+                                  "operation", "gegl:invert",
                                   NULL);
 
-  nr2 = gegl_node_new_child (gegl,
-                                  "operation", "gegl:noise-reduction",
-                                  NULL);
-  blur = gegl_node_new_child (gegl,
+
+
+   gaus = gegl_node_new_child (gegl,
                                   "operation", "gegl:gaussian-blur",
                                   NULL);
 
+   med = gegl_node_new_child (gegl,
+                                  "operation", "gegl:median-blur",
+                                  NULL);
 
+   vp = gegl_node_new_child (gegl,
+                                  "operation", "gegl:value-propagate",
+                                  NULL);
 
-
+   brightness = gegl_node_new_child (gegl,
+                                  "operation", "gegl:brightness-contrast",
+                                  NULL);
 
 
 
 
   gegl_operation_meta_redirect (operation, "gray", gray, "gray");
 
+  gegl_operation_meta_redirect (operation, "edgeradius", edge, "radius");
+
+  gegl_operation_meta_redirect (operation, "edgeamount", edge, "amount");
+
+  gegl_operation_meta_redirect (operation, "threshold", threshold, "value");
+
+  gegl_operation_meta_redirect (operation, "gaus", gaus, "std-dev-x");
+
+  gegl_operation_meta_redirect (operation, "gaus", gaus, "std-dev-y");
+
+  gegl_operation_meta_redirect (operation, "medianshape", med, "neighborhood");
 
 
-  gegl_operation_meta_redirect (operation, "gaus", blur, "std-dev-x");
+  gegl_operation_meta_redirect (operation, "medianradius", med, "radius");
 
-  gegl_operation_meta_redirect (operation, "gaus", blur, "std-dev-y");
+  gegl_operation_meta_redirect (operation, "medianpercentile", med, "percentile");
 
- gegl_operation_meta_redirect (operation, "dt", dt, "n-iterations");
-
- gegl_operation_meta_redirect (operation, "dg1", dg, "radius1");
-
- gegl_operation_meta_redirect (operation, "dg2", dg, "radius2");
-
- gegl_operation_meta_redirect (operation, "low", levels, "in-low");
-
- gegl_operation_meta_redirect (operation, "high", levels, "in-high");
-
-
-
-
-
-
+  gegl_operation_meta_redirect (operation, "brightness", brightness, "brightness");
 
 
 
@@ -147,7 +136,12 @@ static void attach (GeglOperation *operation)
 
 
 
-  gegl_node_link_many (input, nr, dt, dg, gray, levels, ig, rc, nr2, blur, output, NULL);
+
+
+
+
+
+  gegl_node_link_many (input, gray, edge, threshold, gaus, invert, med, vp, vp, brightness, output, NULL);
 
 
 
@@ -167,8 +161,8 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:pencil",
     "title",       _("Pencil drawing"),
     "categories",  "Aristic",
-    "reference-hash", "456j6bfghd50f435sf27ac",
-    "description", _("Make your image have a drawing effect with GEGL.   "
+    "reference-hash", "456j6bfghd50f4f25sb27ac",
+    "description", _("Make your image have a drawing effect with GEGL. Works best on images with solid color backgrounds.   "
                      ""),
     NULL);
 }
