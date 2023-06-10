@@ -174,4 +174,3 @@ gegl_op_class_init (GeglOpClass *klass)
 }
 
 #endif
-
