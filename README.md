@@ -59,6 +59,6 @@ ninja -C build
 
 ![image preview](pencil_preview2.png)
 
-![image preview](pencil_preview3.png)
+![image preview](pencil_preview_3.png)
 
 
