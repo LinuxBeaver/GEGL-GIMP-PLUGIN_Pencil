@@ -15,7 +15,20 @@
  *
  * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
  * GEGL Pencil, 2022 Beaver programmed filter) 2022 "cli345 Gimpchat.com' (Discoverer of the GEGL operations that made the filter)
- */
+
+
+GEGL Graph recreated by Beaver but likely discovered in Mid 2021 by Clli345. I'm impressed he knew about rgb-clip's use case two years before I did. I just recently learned what it does.
+
+noise-reduction iterations=3
+domain-transform n-iterations=1
+gegl:difference-of-gaussians radius1=1 radius2=0.33
+gray
+levels in-low=0.004 in-high=0.009
+invert-gamma
+rgb-clip
+noise-reduction
+gaussian-blur std-dev-x=2 std-dev-y=2
+*/
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
@@ -109,45 +122,17 @@ static void attach (GeglOperation *operation)
                                   NULL);
 
 
-
-
-
-
-
-
-  gegl_operation_meta_redirect (operation, "gray", gray, "gray");
-
-
-
-  gegl_operation_meta_redirect (operation, "gaus", blur, "std-dev-x");
-
-  gegl_operation_meta_redirect (operation, "gaus", blur, "std-dev-y");
-
+ gegl_operation_meta_redirect (operation, "gray", gray, "gray");
+ gegl_operation_meta_redirect (operation, "gaus", blur, "std-dev-x");
+ gegl_operation_meta_redirect (operation, "gaus", blur, "std-dev-y");
  gegl_operation_meta_redirect (operation, "dt", dt, "n-iterations");
-
  gegl_operation_meta_redirect (operation, "dg1", dg, "radius1");
-
  gegl_operation_meta_redirect (operation, "dg2", dg, "radius2");
-
  gegl_operation_meta_redirect (operation, "low", levels, "in-low");
-
  gegl_operation_meta_redirect (operation, "high", levels, "in-high");
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-  gegl_node_link_many (input, nr, dt, dg, gray, levels, ig, rc, nr2, blur, output, NULL);
+gegl_node_link_many (input, nr, dt, dg, gray, levels, ig, rc, nr2, blur, output, NULL);
 
 
 
@@ -174,3 +159,4 @@ gegl_op_class_init (GeglOpClass *klass)
 }
 
 #endif
+
