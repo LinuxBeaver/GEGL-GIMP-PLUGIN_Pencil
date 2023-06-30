@@ -55,6 +55,10 @@ Then build the same way you would on Linux:
 meson setup --buildtype=release build
 ninja -C build
 ```
+## More Previews of this based plugin
 
+![image preview](pencil_preview2.png)
+
+![image preview](pencil_preview3.png)
 
 
