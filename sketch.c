@@ -47,7 +47,7 @@ property_int (dt, _("Smoothness"), 1)
 
 property_double (dg1, _("Radius 1"), 1.0)
   value_range (0.4, 1.4)
-  ui_range (0.0, 1.4)
+  ui_range (0.4, 1.4)
   ui_gamma (1.5)
 
 property_double (dg2, _("Radius 2"), 0.33)
@@ -62,8 +62,6 @@ property_double (low, _("Low Luminance"), 0.004)
 property_double (high, _("High Luminance"), 0.009)
     description ( _("Input luminance levels"))
     ui_range    (0.004, 0.010)
-
-
 
 #else
 
@@ -121,8 +119,6 @@ static void attach (GeglOperation *operation)
                                   "operation", "gegl:gaussian-blur",
                                   NULL);
 
-
- gegl_operation_meta_redirect (operation, "gray", gray, "gray");
  gegl_operation_meta_redirect (operation, "gaus", blur, "std-dev-x");
  gegl_operation_meta_redirect (operation, "gaus", blur, "std-dev-y");
  gegl_operation_meta_redirect (operation, "dt", dt, "n-iterations");
@@ -133,9 +129,6 @@ static void attach (GeglOperation *operation)
 
 
 gegl_node_link_many (input, nr, dt, dg, gray, levels, ig, rc, nr2, blur, output, NULL);
-
-
-
 
 }
 
