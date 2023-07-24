@@ -144,10 +144,11 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:pencil",
     "title",       _("Pencil drawing"),
-    "categories",  "Aristic",
     "reference-hash", "456j6bfghd50f435sf27ac",
     "description", _("Make your image have a drawing effect with GEGL.   "
                      ""),
+    "gimp:menu-path", "<Image>/Filters/Artistic",
+    "gimp:menu-label", _("Pencil..."),
     NULL);
 }
 
