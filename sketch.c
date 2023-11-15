@@ -142,7 +142,7 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->attach = attach;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:pencil",
+    "name",        "lb:pencil",
     "title",       _("Pencil drawing"),
     "reference-hash", "456j6bfghd50f435sf27ac",
     "description", _("Make your image have a drawing effect with GEGL.   "
