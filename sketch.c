@@ -116,7 +116,7 @@ static void attach (GeglOperation *operation)
                                   "operation", "gegl:noise-reduction",
                                   NULL);
   blur = gegl_node_new_child (gegl,
-                                  "operation", "gegl:gaussian-blur",
+                                  "operation", "gegl:gaussian-blur",   "abyss-policy", 0,  "clip-extent", FALSE,  
                                   NULL);
 
  gegl_operation_meta_redirect (operation, "gaus", blur, "std-dev-x");
